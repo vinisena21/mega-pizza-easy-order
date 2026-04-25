@@ -9,8 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ConfirmacaoRouteImport } from './routes/confirmacao'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as CardapioRouteImport } from './routes/cardapio'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ConfirmacaoRoute = ConfirmacaoRouteImport.update({
+  id: '/confirmacao',
+  path: '/confirmacao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CardapioRoute = CardapioRouteImport.update({
+  id: '/cardapio',
+  path: '/cardapio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +37,61 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cardapio': typeof CardapioRoute
+  '/checkout': typeof CheckoutRoute
+  '/confirmacao': typeof ConfirmacaoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cardapio': typeof CardapioRoute
+  '/checkout': typeof CheckoutRoute
+  '/confirmacao': typeof ConfirmacaoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cardapio': typeof CardapioRoute
+  '/checkout': typeof CheckoutRoute
+  '/confirmacao': typeof ConfirmacaoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/cardapio' | '/checkout' | '/confirmacao'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/cardapio' | '/checkout' | '/confirmacao'
+  id: '__root__' | '/' | '/cardapio' | '/checkout' | '/confirmacao'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CardapioRoute: typeof CardapioRoute
+  CheckoutRoute: typeof CheckoutRoute
+  ConfirmacaoRoute: typeof ConfirmacaoRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/confirmacao': {
+      id: '/confirmacao'
+      path: '/confirmacao'
+      fullPath: '/confirmacao'
+      preLoaderRoute: typeof ConfirmacaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cardapio': {
+      id: '/cardapio'
+      path: '/cardapio'
+      fullPath: '/cardapio'
+      preLoaderRoute: typeof CardapioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +104,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CardapioRoute: CardapioRoute,
+  CheckoutRoute: CheckoutRoute,
+  ConfirmacaoRoute: ConfirmacaoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
