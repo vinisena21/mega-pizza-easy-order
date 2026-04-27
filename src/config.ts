@@ -1,4 +1,4 @@
-export const WHATSAPP_NUMBER = "5511999999999"; // Substitua pelo número real
+export const WHATSAPP_NUMBER = "5533991539731";
 export const RESTAURANT_NAME = "Mega Pizza";
 
 export function buildWhatsAppOrderLink(message: string) {
