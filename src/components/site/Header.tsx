@@ -15,6 +15,11 @@ export function Header() {
             src={logoMegaPizza}
             alt="Mega Pizza - Pizzaria Delivery"
             className="h-12 w-auto transition-transform group-hover:scale-105 drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            width={120}
+            height={48}
           />
           <div className="leading-none hidden sm:block">
             <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
