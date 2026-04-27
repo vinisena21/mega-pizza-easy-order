@@ -25,9 +25,11 @@ export function Footer() {
           <div className="text-sm">
             <h4 className="mb-3 font-display text-base text-gold">Horário</h4>
             <ul className="space-y-1 text-muted-foreground">
-              <li>Terça a Quinta · 18h às 23h</li>
-              <li>Sexta e Sábado · 18h às 00h</li>
-              <li>Domingo · 18h às 23h</li>
+              <li>Quinta a Segunda</li>
+              <li>18h às 23h</li>
+              <li className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-gold/10 px-2.5 py-1 text-xs font-semibold text-gold">
+                🚚 Frete grátis em todas as pizzas
+              </li>
             </ul>
           </div>
 

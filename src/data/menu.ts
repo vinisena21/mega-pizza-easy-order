@@ -241,7 +241,10 @@ export const MENU: MenuItem[] = [
   },
 ];
 
-export const DELIVERY_FEE = 8.9;
+export const DELIVERY_FEE = 0;
+
+/** Horário de funcionamento da pizzaria. */
+export const OPENING_HOURS = "Quinta a Segunda · 18h às 23h";
 
 export function formatPrice(value: number) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });

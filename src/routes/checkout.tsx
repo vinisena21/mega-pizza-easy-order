@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Minus, Plus, Trash2, ShoppingBag, MapPin, CreditCard, Banknote, QrCode } from "lucide-react";
 import { toast } from "sonner";
-import { CRUSTS, DELIVERY_FEE, EXTRAS, SIZES, formatPrice } from "@/data/menu";
+import { CRUSTS, EXTRAS, SIZES, formatPrice } from "@/data/menu";
 import { calcUnitPrice, useCart } from "@/store/cart";
 import { cn } from "@/lib/utils";
 
@@ -35,12 +35,20 @@ function CheckoutPage() {
   const [payment, setPayment] = useState<PaymentMethod>("pix");
   const [change, setChange] = useState("");
 
-  const total = useMemo(() => subtotal + (subtotal > 0 ? DELIVERY_FEE : 0), [subtotal]);
+  const hasPizza = useMemo(
+    () => items.some((it) => it.customizable),
+    [items],
+  );
+  const total = useMemo(() => subtotal, [subtotal]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (items.length === 0) {
       toast.error("Seu carrinho está vazio.");
+      return;
+    }
+    if (!hasPizza) {
+      toast.error("Adicione pelo menos 1 pizza ao carrinho para finalizar.");
       return;
     }
     if (!name.trim() || !phone.trim() || !address.trim() || !number.trim() || !neighborhood.trim()) {
@@ -57,7 +65,7 @@ function CheckoutPage() {
         address: `${address}, ${number}${complement ? ` — ${complement}` : ""} — ${neighborhood}`,
         items,
         subtotal,
-        delivery: DELIVERY_FEE,
+        delivery: 0,
         total,
         payment,
         change,
@@ -278,7 +286,10 @@ function CheckoutPage() {
           <Card title="Resumo">
             <div className="space-y-2 text-sm">
               <Row label="Subtotal" value={formatPrice(subtotal)} />
-              <Row label="Taxa de entrega" value={formatPrice(DELIVERY_FEE)} />
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Taxa de entrega</span>
+                <span className="font-semibold text-gold">🚚 Grátis</span>
+              </div>
               <div className="my-3 border-t border-border" />
               <div className="flex items-center justify-between">
                 <span className="text-base font-semibold">Total</span>
@@ -287,9 +298,15 @@ function CheckoutPage() {
                 </span>
               </div>
             </div>
+            {!hasPizza && (
+              <p className="mt-4 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+                Adicione pelo menos 1 pizza para finalizar. Bebidas só podem ser compradas junto com pizza.
+              </p>
+            )}
             <button
               type="submit"
-              className="mt-5 w-full rounded-full bg-gradient-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-[1.02]"
+              disabled={!hasPizza}
+              className="mt-5 w-full rounded-full bg-gradient-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
             >
               Confirmar pedido
             </button>

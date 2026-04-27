@@ -31,6 +31,16 @@ function MenuPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
+      {/* Banner Frete Grátis */}
+      <div className="mb-8 flex flex-col items-center gap-2 rounded-2xl border border-gold/40 bg-gradient-to-r from-primary/15 via-gold/10 to-primary/15 px-6 py-5 text-center shadow-glow sm:flex-row sm:justify-center sm:gap-4">
+        <span className="font-display text-2xl font-bold text-gold sm:text-3xl">
+          🚚 Frete Grátis
+        </span>
+        <span className="text-sm text-foreground/90 sm:text-base">
+          em todas as pizzas · Quinta a Segunda · 18h às 23h
+        </span>
+      </div>
+
       <div className="mb-10 text-center">
         <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
           Cardápio digital
@@ -39,7 +49,7 @@ function MenuPage() {
           Escolha a sua favorita
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-          Personalize tamanho, borda e adicionais. Tudo entregue quentinho na sua porta.
+          Personalize tamanho, borda e adicionais. Bebidas só podem ser compradas junto com uma pizza.
         </p>
       </div>
 

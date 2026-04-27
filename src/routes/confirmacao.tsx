@@ -142,7 +142,7 @@ function ConfirmationPage() {
 
         <div className="space-y-1.5 text-sm">
           <DLRow label="Subtotal" value={formatPrice(order.subtotal)} />
-          <DLRow label="Entrega" value={formatPrice(order.delivery)} />
+          <DLRow label="Entrega" value="🚚 Grátis" />
         </div>
         <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
           <span className="font-semibold">Total</span>
@@ -182,7 +182,7 @@ function buildWhatsAppMessage(order: Order) {
     }),
     ``,
     `Subtotal: ${formatPrice(order.subtotal)}`,
-    `Entrega: ${formatPrice(order.delivery)}`,
+    `Entrega: Grátis`,
     `*Total: ${formatPrice(order.total)}*`,
     ``,
     `*Pagamento:* ${PAYMENT_LABELS[order.payment]}${order.payment === "dinheiro" && order.change ? ` (troco para ${order.change})` : ""}`,

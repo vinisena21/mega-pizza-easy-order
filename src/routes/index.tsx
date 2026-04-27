@@ -1,19 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Clock, Flame, ShieldCheck, Truck } from "lucide-react";
+import { ArrowRight, Clock, ShieldCheck, Truck } from "lucide-react";
 import heroPizza from "@/assets/hero-pizza.jpg";
-import { MENU, formatPrice } from "@/data/menu";
+import { MENU } from "@/data/menu";
 import { PizzaCard } from "@/components/site/PizzaCard";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Mega Pizza — Pizzas artesanais com delivery premium" },
+      { title: "Mega Pizza — Pizzas artesanais com delivery e frete grátis" },
       {
         name: "description",
         content:
           "Massa de fermentação natural, ingredientes selecionados e entrega quente. Peça agora pelo nosso cardápio digital.",
       },
-      { property: "og:title", content: "Mega Pizza — Delivery Premium" },
+      { property: "og:title", content: "Mega Pizza — Frete Grátis em todas as pizzas" },
       {
         property: "og:description",
         content: "Pizzas artesanais entregues quentinhas. Peça já.",
@@ -34,7 +34,7 @@ function HomePage() {
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:gap-6 md:py-24">
           <div className="relative z-10">
             <span className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">
-              <Flame className="h-3.5 w-3.5" /> Forno a lenha
+              🚚 Frete Grátis em todas as pizzas
             </span>
             <h1 className="mt-5 font-display text-5xl font-bold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
               Pizza artesanal,
@@ -44,6 +44,9 @@ function HomePage() {
             <p className="mt-5 max-w-md text-base text-muted-foreground sm:text-lg">
               Massa de fermentação natural por 48 horas, ingredientes selecionados e entrega
               em até 45 minutos.
+            </p>
+            <p className="mt-3 text-sm font-semibold text-gold">
+              ⏰ Quinta a Segunda · 18h às 23h
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -64,7 +67,7 @@ function HomePage() {
 
             <div className="mt-10 grid max-w-md grid-cols-3 gap-4 text-center">
               <Stat icon={<Clock className="h-4 w-4" />} value="45min" label="Entrega" />
-              <Stat icon={<Truck className="h-4 w-4" />} value="R$ 8,90" label="Frete fixo" />
+              <Stat icon={<Truck className="h-4 w-4" />} value="Grátis" label="Frete" />
               <Stat icon={<ShieldCheck className="h-4 w-4" />} value="4.9★" label="Avaliação" />
             </div>
           </div>
@@ -82,7 +85,7 @@ function HomePage() {
               className="relative w-full rounded-3xl object-cover shadow-elegant"
             />
             <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 rounded-full border border-gold/40 bg-card/95 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gold backdrop-blur shadow-gold whitespace-nowrap">
-              ★ Promo: Frete grátis acima de R$ 120
+              🚚 Frete Grátis em todas as pizzas
             </div>
           </div>
         </div>
@@ -115,7 +118,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* PROMO BANNER */}
+      {/* INFO BANNER */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="relative overflow-hidden rounded-3xl border border-gold/30 bg-gradient-dark p-10 shadow-elegant sm:p-14">
           <div
@@ -125,29 +128,22 @@ function HomePage() {
           <div className="relative grid items-center gap-6 md:grid-cols-2">
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-                Combo da casa
+                Atendimento
               </span>
               <h3 className="mt-2 font-display text-3xl font-bold sm:text-4xl">
-                2 Pizzas Grandes + Refri 2L
+                Quinta a Segunda · 18h às 23h
               </h3>
               <p className="mt-3 text-muted-foreground">
-                Escolha duas pizzas tradicionais e leve um refrigerante 2 litros incluso.
+                Peça sua pizza favorita com frete grátis, direto na sua porta.
               </p>
             </div>
-            <div className="flex items-center justify-end gap-4">
-              <div className="text-right">
-                <div className="text-xs uppercase tracking-wider text-muted-foreground">
-                  por apenas
-                </div>
-                <div className="font-display text-5xl font-bold text-gold">
-                  {formatPrice(119.9)}
-                </div>
-              </div>
+            <div className="flex items-center justify-end">
               <Link
                 to="/cardapio"
-                className="rounded-full bg-gradient-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-105"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-105"
               >
-                Pedir
+                Ver cardápio
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>
