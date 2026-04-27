@@ -3,7 +3,6 @@ import { persist } from "zustand/middleware";
 import {
   CRUSTS,
   EXTRAS,
-  SIZES,
   type CrustId,
   type ExtraId,
   type MenuItem,
@@ -16,6 +15,7 @@ export type CartItem = {
   name: string;
   image: string;
   basePrice: number;
+  prices?: Record<SizeId, number>;
   customizable: boolean;
   size: SizeId;
   crust: CrustId;
@@ -24,15 +24,18 @@ export type CartItem = {
   quantity: number;
 };
 
-export function calcUnitPrice(item: Pick<CartItem, "basePrice" | "size" | "crust" | "extras" | "customizable">) {
+export function calcUnitPrice(
+  item: Pick<CartItem, "basePrice" | "prices" | "size" | "crust" | "extras" | "customizable">,
+) {
   if (!item.customizable) return item.basePrice;
-  const size = SIZES.find((s) => s.id === item.size)!;
-  const crust = CRUSTS.find((c) => c.id === item.crust)!;
+  const sizePrice = item.prices?.[item.size] ?? item.basePrice;
+  const crust = CRUSTS.find((c) => c.id === item.crust);
+  const crustPrice = crust ? crust.prices[item.size] : 0;
   const extrasTotal = item.extras.reduce(
     (sum, eId) => sum + (EXTRAS.find((e) => e.id === eId)?.price ?? 0),
     0,
   );
-  return item.basePrice * size.multiplier + crust.price + extrasTotal;
+  return sizePrice + crustPrice + extrasTotal;
 }
 
 type CartState = {
@@ -59,6 +62,7 @@ export const useCart = create<CartState>()(
           name: item.name,
           image: item.image,
           basePrice: item.basePrice,
+          prices: item.prices,
           customizable: item.customizable,
           size: config.size,
           crust: config.crust,
@@ -78,6 +82,6 @@ export const useCart = create<CartState>()(
       subtotal: () => get().items.reduce((s, i) => s + calcUnitPrice(i) * i.quantity, 0),
       totalItems: () => get().items.reduce((s, i) => s + i.quantity, 0),
     }),
-    { name: "mega-pizza-cart" },
+    { name: "mega-pizza-cart", version: 2 },
   ),
 );
