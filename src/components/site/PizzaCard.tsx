@@ -31,6 +31,20 @@ export function PizzaCard({ item }: { item: MenuItem }) {
           <h3 className="font-display text-xl font-semibold tracking-tight">{item.name}</h3>
           <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{item.description}</p>
 
+          {item.customizable && item.prices && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {(["P", "M", "G"] as const).map((s) => (
+                <span
+                  key={s}
+                  className="inline-flex items-center gap-1 rounded-md border border-border bg-background/60 px-2 py-1 text-[11px] font-medium"
+                >
+                  <span className="font-bold text-gold">{s}</span>
+                  <span className="text-muted-foreground">{formatPrice(item.prices![s])}</span>
+                </span>
+              ))}
+            </div>
+          )}
+
           <div className="mt-4 flex items-center justify-between gap-3">
             <div>
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
