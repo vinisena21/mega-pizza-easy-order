@@ -11,12 +11,12 @@ export const Route = createFileRoute("/cardapio")({
       {
         name: "description",
         content:
-          "Confira nosso cardápio completo: pizzas tradicionais, especiais, doces e bebidas geladas.",
+          "Confira nosso cardápio completo: pizzas tradicionais, especiais e bebidas geladas com entrega em Ponto dos Volantes/MG.",
       },
       { property: "og:title", content: "Cardápio — Mega Pizza" },
       {
         property: "og:description",
-        content: "Pizzas artesanais, doces e bebidas. Peça pelo cardápio digital.",
+        content: "Pizzas artesanais e bebidas. Peça pelo cardápio digital da Mega Pizza.",
       },
     ],
   }),
