@@ -1,4 +1,5 @@
-import { Pizza, Instagram, Phone, MapPin } from "lucide-react";
+import { Instagram, Phone, MapPin } from "lucide-react";
+import logoMegaPizza from "@/assets/logo-mega-pizza.png";
 
 export function Footer() {
   return (
@@ -6,14 +7,11 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         <div className="grid gap-10 md:grid-cols-3">
           <div>
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-primary">
-                <Pizza className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-display text-lg font-bold">
-                Mega <span className="text-gold">Pizza</span>
-              </span>
-            </div>
+            <img
+              src={logoMegaPizza}
+              alt="Mega Pizza"
+              className="h-20 w-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+            />
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
               Massa artesanal de fermentação natural, ingredientes selecionados e entrega
               quente até a sua porta.

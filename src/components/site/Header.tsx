@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ShoppingBag, Pizza } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/store/cart";
+import logoMegaPizza from "@/assets/logo-mega-pizza.png";
 
 export function Header() {
   const totalItems = useCart((s) => s.totalItems());
@@ -9,14 +10,13 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-primary shadow-glow transition-transform group-hover:scale-110">
-            <Pizza className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <div className="leading-none">
-            <div className="font-display text-xl font-bold tracking-tight">
-              Mega <span className="text-gold">Pizza</span>
-            </div>
+        <Link to="/" className="flex items-center gap-3 group" aria-label="Mega Pizza - Início">
+          <img
+            src={logoMegaPizza}
+            alt="Mega Pizza - Pizzaria Delivery"
+            className="h-12 w-auto transition-transform group-hover:scale-105 drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+          />
+          <div className="leading-none hidden sm:block">
             <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               Delivery Premium
             </div>
