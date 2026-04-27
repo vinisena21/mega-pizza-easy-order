@@ -84,33 +84,39 @@ export function CustomizeDialog({
             <>
               <Section title="Tamanho">
                 <div className="grid grid-cols-3 gap-2">
-                  {SIZES.map((s) => (
-                    <Choice
-                      key={s.id}
-                      active={size === s.id}
-                      onClick={() => setSize(s.id)}
-                      title={s.label}
-                      subtitle={s.slices}
-                    />
-                  ))}
+                  {SIZES.map((s) => {
+                    const sp = item.prices?.[s.id] ?? item.basePrice;
+                    return (
+                      <Choice
+                        key={s.id}
+                        active={size === s.id}
+                        onClick={() => setSize(s.id)}
+                        title={`${s.id} · ${s.label}`}
+                        subtitle={`${s.slices} · ${formatPrice(sp)}`}
+                      />
+                    );
+                  })}
                 </div>
               </Section>
 
-              <Section title="Borda">
-                <div className="grid grid-cols-2 gap-2">
-                  {CRUSTS.map((c) => (
-                    <Choice
-                      key={c.id}
-                      active={crust === c.id}
-                      onClick={() => setCrust(c.id)}
-                      title={c.label}
-                      subtitle={c.price === 0 ? "Grátis" : `+ ${formatPrice(c.price)}`}
-                    />
-                  ))}
+              <Section title="Borda recheada">
+                <div className="grid grid-cols-3 gap-2">
+                  {CRUSTS.map((c) => {
+                    const cp = c.prices[size];
+                    return (
+                      <Choice
+                        key={c.id}
+                        active={crust === c.id}
+                        onClick={() => setCrust(c.id)}
+                        title={c.label}
+                        subtitle={cp === 0 ? "Grátis" : `+ ${formatPrice(cp)}`}
+                      />
+                    );
+                  })}
                 </div>
               </Section>
 
-              <Section title="Adicionais">
+              <Section title="Adicionais (ingredientes)">
                 <div className="space-y-2">
                   {EXTRAS.map((e) => {
                     const checked = extras.includes(e.id);
