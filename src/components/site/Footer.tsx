@@ -11,6 +11,10 @@ export function Footer() {
               src={logoMegaPizza}
               alt="Mega Pizza"
               className="h-20 w-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+              loading="lazy"
+              decoding="async"
+              width={160}
+              height={80}
             />
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
               Massa artesanal de fermentação natural, ingredientes selecionados e entrega
