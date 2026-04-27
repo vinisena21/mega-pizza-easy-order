@@ -33,7 +33,7 @@ export function Footer() {
             <h4 className="mb-3 font-display text-base text-gold">Contato</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4" /> (11) 99999-9999
+                <Phone className="h-4 w-4" /> (33) 9153-9731
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" /> Apenas delivery — toda a região metropolitana
