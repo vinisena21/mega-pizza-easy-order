@@ -22,8 +22,8 @@ export function Header() {
             height={48}
           />
           <div className="leading-none hidden sm:block">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Delivery Premium
+            <div className="text-[10px] uppercase tracking-[0.2em] text-gold">
+              🚚 Frete Grátis
             </div>
           </div>
         </Link>
