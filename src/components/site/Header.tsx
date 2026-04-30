@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ShoppingBag } from "lucide-react";
-import { useCart } from "@/store/cart";
+import { useCart, useCartHydrated } from "@/store/cart";
 import logoMegaPizza from "@/assets/logo-mega-pizza.png";
 
 export function Header() {
+  const hydrated = useCartHydrated();
   const totalItems = useCart((s) => s.totalItems());
   const navigate = useNavigate();
 
@@ -52,7 +53,7 @@ export function Header() {
         >
           <ShoppingBag className="h-4 w-4" />
           <span className="hidden sm:inline">Carrinho</span>
-          {totalItems > 0 && (
+          {hydrated && totalItems > 0 && (
             <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[11px] font-bold text-gold-foreground">
               {totalItems}
             </span>

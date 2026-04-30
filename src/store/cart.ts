@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import {
@@ -85,3 +86,15 @@ export const useCart = create<CartState>()(
     { name: "mega-pizza-cart", version: 2 },
   ),
 );
+
+/**
+ * Hook that returns true only after client-side hydration is complete.
+ * Use this to avoid SSR/client mismatch with persisted Zustand state.
+ */
+export function useCartHydrated() {
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+  return hydrated;
+}

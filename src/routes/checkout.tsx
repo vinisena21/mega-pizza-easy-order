@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { Minus, Plus, Trash2, ShoppingBag, MapPin, CreditCard, Banknote, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { CRUSTS, EXTRAS, SIZES, formatPrice } from "@/data/menu";
-import { calcUnitPrice, useCart } from "@/store/cart";
+import { calcUnitPrice, useCart, useCartHydrated } from "@/store/cart";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/checkout")({
@@ -19,6 +19,7 @@ export const Route = createFileRoute("/checkout")({
 type PaymentMethod = "pix" | "cartao" | "dinheiro";
 
 function CheckoutPage() {
+  const hydrated = useCartHydrated();
   const items = useCart((s) => s.items);
   const setQty = useCart((s) => s.setQuantity);
   const remove = useCart((s) => s.removeItem);
@@ -74,6 +75,17 @@ function CheckoutPage() {
     );
     clear();
     navigate({ to: "/confirmacao" });
+  }
+
+  if (!hydrated) {
+    return (
+      <div className="mx-auto flex max-w-md flex-col items-center px-4 py-24 text-center">
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-card border border-border">
+          <ShoppingBag className="h-9 w-9 text-muted-foreground" />
+        </div>
+        <p className="text-muted-foreground">Carregando carrinho…</p>
+      </div>
+    );
   }
 
   if (items.length === 0) {
