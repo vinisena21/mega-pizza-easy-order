@@ -85,15 +85,14 @@ function ConfirmationPage() {
           />
         </div>
 
-        <a
-          href={buildWhatsAppOrderLink(whatsappMessage)}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={() => window.open(buildWhatsAppOrderLink(whatsappMessage), "_blank", "noopener,noreferrer")}
           className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-sm font-semibold text-white shadow-elegant transition-transform hover:scale-[1.02]"
         >
           <MessageCircle className="h-5 w-5" />
           Enviar pedido pelo WhatsApp
-        </a>
+        </button>
       </div>
 
       {/* Resumo */}

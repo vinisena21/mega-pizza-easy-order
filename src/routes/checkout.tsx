@@ -3,8 +3,9 @@ import { useMemo, useState } from "react";
 import { Minus, Plus, Trash2, ShoppingBag, MapPin, CreditCard, Banknote, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { CRUSTS, EXTRAS, SIZES, formatPrice } from "@/data/menu";
-import { calcUnitPrice, useCart, useCartHydrated } from "@/store/cart";
+import { calcUnitPrice, useCart, useCartHydrated, type CartItem } from "@/store/cart";
 import { cn } from "@/lib/utils";
+import { buildWhatsAppOrderLink, RESTAURANT_NAME } from "@/config";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -57,13 +58,51 @@ function CheckoutPage() {
       return;
     }
     const orderNumber = Math.floor(100000 + Math.random() * 900000).toString();
+    const fullAddress = `${address}, ${number}${complement ? ` — ${complement}` : ""} — ${neighborhood}`;
+    const PAYMENT_LABELS: Record<PaymentMethod, string> = {
+      pix: "Pix",
+      cartao: "Cartão",
+      dinheiro: "Dinheiro",
+    };
+
+    // Build WhatsApp message
+    const itemLines = items.map((it) => {
+      const sizeLabel = it.customizable ? SIZES.find((s) => s.id === it.size)?.label : "";
+      const crustLabel = it.customizable ? CRUSTS.find((c) => c.id === it.crust)?.label : "";
+      const extrasLabel = it.extras.length
+        ? `, +${it.extras.map((ex) => EXTRAS.find((x) => x.id === ex)?.label).join(", ")}`
+        : "";
+      const detail = it.customizable ? ` (${sizeLabel}, borda ${crustLabel}${extrasLabel})` : "";
+      return `• ${it.quantity}× ${it.name}${detail} — ${formatPrice(calcUnitPrice(it) * it.quantity)}`;
+    });
+
+    const msg = [
+      `*${RESTAURANT_NAME} — Pedido #${orderNumber}*`,
+      ``,
+      `*Cliente:* ${name}`,
+      `*Telefone:* ${phone}`,
+      `*Endereço:* ${fullAddress}`,
+      ``,
+      `*🍕 Itens:*`,
+      ...itemLines,
+      ``,
+      `Subtotal: ${formatPrice(subtotal)}`,
+      `Entrega: 🚚 Grátis`,
+      `*💰 Total: ${formatPrice(total)}*`,
+      ``,
+      `*Pagamento:* ${PAYMENT_LABELS[payment]}${payment === "dinheiro" && change ? ` (troco para ${change})` : ""}`,
+    ].join("\n");
+
+    const url = buildWhatsAppOrderLink(msg);
+
+    // Save order for confirmation page
     sessionStorage.setItem(
       "mega-pizza-last-order",
       JSON.stringify({
         orderNumber,
         name,
         phone,
-        address: `${address}, ${number}${complement ? ` — ${complement}` : ""} — ${neighborhood}`,
+        address: fullAddress,
         items,
         subtotal,
         delivery: 0,
@@ -74,6 +113,9 @@ function CheckoutPage() {
       }),
     );
     clear();
+
+    // Open WhatsApp in new tab (avoids iframe/embed blocking)
+    window.open(url, "_blank", "noopener,noreferrer");
     navigate({ to: "/confirmacao" });
   }
 
