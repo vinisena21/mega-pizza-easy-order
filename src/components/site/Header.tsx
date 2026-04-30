@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { ShoppingBag } from "lucide-react";
-import { useCart } from "@/store/cart";
+import { useCart, useCartHydrated } from "@/store/cart";
 import logoMegaPizza from "@/assets/logo-mega-pizza.png";
 
 export function Header() {
+  const hydrated = useCartHydrated();
   const totalItems = useCart((s) => s.totalItems());
   const navigate = useNavigate();
 
