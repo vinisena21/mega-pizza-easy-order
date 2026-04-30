@@ -19,6 +19,7 @@ export const Route = createFileRoute("/checkout")({
 type PaymentMethod = "pix" | "cartao" | "dinheiro";
 
 function CheckoutPage() {
+  const hydrated = useCartHydrated();
   const items = useCart((s) => s.items);
   const setQty = useCart((s) => s.setQuantity);
   const remove = useCart((s) => s.removeItem);
