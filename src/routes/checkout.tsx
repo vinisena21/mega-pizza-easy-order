@@ -3,8 +3,9 @@ import { useMemo, useState } from "react";
 import { Minus, Plus, Trash2, ShoppingBag, MapPin, CreditCard, Banknote, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { CRUSTS, EXTRAS, SIZES, formatPrice } from "@/data/menu";
-import { calcUnitPrice, useCart, useCartHydrated } from "@/store/cart";
+import { calcUnitPrice, useCart, useCartHydrated, type CartItem } from "@/store/cart";
 import { cn } from "@/lib/utils";
+import { buildWhatsAppOrderLink, RESTAURANT_NAME } from "@/config";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
