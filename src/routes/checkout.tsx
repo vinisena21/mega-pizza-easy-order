@@ -77,6 +77,17 @@ function CheckoutPage() {
     navigate({ to: "/confirmacao" });
   }
 
+  if (!hydrated) {
+    return (
+      <div className="mx-auto flex max-w-md flex-col items-center px-4 py-24 text-center">
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-card border border-border">
+          <ShoppingBag className="h-9 w-9 text-muted-foreground" />
+        </div>
+        <p className="text-muted-foreground">Carregando carrinho…</p>
+      </div>
+    );
+  }
+
   if (items.length === 0) {
     return (
       <div className="mx-auto flex max-w-md flex-col items-center px-4 py-24 text-center">
