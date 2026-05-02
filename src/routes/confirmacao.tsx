@@ -1,8 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CheckCircle2, Clock, MessageCircle } from "lucide-react";
+import { CheckCircle2, Clock, Copy, MessageCircle } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { toast } from "sonner";
 import { formatPrice } from "@/data/menu";
-import { buildWhatsAppOrderLink, RESTAURANT_NAME } from "@/config";
+import { buildWhatsAppOrderLink, RESTAURANT_NAME, PIX_KEY, PIX_KEY_DISPLAY, PIX_CITY } from "@/config";
+import { buildPixPayload } from "@/lib/pix";
 import type { CartItem } from "@/store/cart";
 import { calcUnitPrice } from "@/store/cart";
 import { CRUSTS, EXTRAS, SIZES } from "@/data/menu";
