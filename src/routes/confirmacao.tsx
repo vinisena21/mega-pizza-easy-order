@@ -1,8 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CheckCircle2, Clock, MessageCircle } from "lucide-react";
+import { CheckCircle2, Clock, Copy, MessageCircle } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { toast } from "sonner";
 import { formatPrice } from "@/data/menu";
-import { buildWhatsAppOrderLink, RESTAURANT_NAME } from "@/config";
+import { buildWhatsAppOrderLink, RESTAURANT_NAME, PIX_KEY, PIX_KEY_DISPLAY, PIX_CITY } from "@/config";
+import { buildPixPayload } from "@/lib/pix";
 import type { CartItem } from "@/store/cart";
 import { calcUnitPrice } from "@/store/cart";
 import { CRUSTS, EXTRAS, SIZES } from "@/data/menu";
@@ -95,7 +98,10 @@ function ConfirmationPage() {
         </button>
       </div>
 
-      {/* Resumo */}
+      {/* Pix QR Code */}
+      {order.payment === "pix" && <PixBlock amount={order.total} orderNumber={order.orderNumber} />}
+
+
       <div className="mt-6 rounded-3xl border border-border/60 bg-card p-6 shadow-elegant sm:p-8">
         <h2 className="font-display text-xl font-semibold">Detalhes</h2>
 
@@ -230,3 +236,70 @@ function DLRow({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
+
+function PixBlock({ amount, orderNumber }: { amount: number; orderNumber: string }) {
+  const payload = buildPixPayload({
+    key: PIX_KEY,
+    merchantName: RESTAURANT_NAME,
+    merchantCity: PIX_CITY,
+    amount,
+    txid: orderNumber,
+  });
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(payload);
+      toast.success("Código Pix copiado!");
+    } catch {
+      toast.error("Não foi possível copiar. Selecione manualmente.");
+    }
+  }
+
+  return (
+    <div className="mt-6 rounded-3xl border border-gold/40 bg-card p-6 shadow-elegant sm:p-8">
+      <h2 className="font-display text-xl font-semibold">Pague com Pix</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Escaneie o QR Code ou copie o código abaixo no app do seu banco. Após pagar,
+        envie o comprovante pelo WhatsApp.
+      </p>
+
+      <div className="mt-5 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+        <div className="rounded-2xl bg-white p-3 shadow-elegant">
+          <QRCodeSVG value={payload} size={180} level="M" />
+        </div>
+
+        <div className="flex-1 space-y-3 text-sm">
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Chave Pix (telefone)
+            </div>
+            <div className="font-display text-lg font-bold text-gold">{PIX_KEY_DISPLAY}</div>
+          </div>
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Valor
+            </div>
+            <div className="font-display text-2xl font-bold">{formatPrice(amount)}</div>
+          </div>
+
+          <button
+            type="button"
+            onClick={copy}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-[1.02]"
+          >
+            <Copy className="h-4 w-4" />
+            Copiar código Pix
+          </button>
+        </div>
+      </div>
+
+      <details className="mt-4 rounded-xl border border-border bg-background/50 p-3 text-xs">
+        <summary className="cursor-pointer font-semibold text-muted-foreground">
+          Ver código Pix completo
+        </summary>
+        <p className="mt-2 break-all font-mono text-[11px] text-foreground/80">{payload}</p>
+      </details>
+    </div>
+  );
+}
+
