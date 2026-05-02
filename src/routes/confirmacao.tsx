@@ -98,7 +98,10 @@ function ConfirmationPage() {
         </button>
       </div>
 
-      {/* Resumo */}
+      {/* Pix QR Code */}
+      {order.payment === "pix" && <PixBlock amount={order.total} orderNumber={order.orderNumber} />}
+
+
       <div className="mt-6 rounded-3xl border border-border/60 bg-card p-6 shadow-elegant sm:p-8">
         <h2 className="font-display text-xl font-semibold">Detalhes</h2>
 
