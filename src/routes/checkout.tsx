@@ -329,7 +329,8 @@ function CheckoutPage() {
             )}
             {payment === "pix" && (
               <p className="mt-3 text-xs text-muted-foreground">
-                O QR Code do Pix será gerado na confirmação do pedido.
+                Você verá o QR Code e a chave Pix na próxima tela. Após pagar, envie o
+                comprovante pelo WhatsApp.
               </p>
             )}
           </Card>
