@@ -12,11 +12,8 @@ import mussarela from "@/assets/pizza-mussarela.jpg";
 import bolonhesa from "@/assets/pizza-bolonhesa.jpg";
 import vegetariana from "@/assets/pizza-vegetariana.jpg";
 import salaminho from "@/assets/pizza-salaminho.jpg";
-import cola from "@/assets/drink-cola.jpg";
-import guarana from "@/assets/drink-guarana.jpg";
-import water from "@/assets/drink-water.jpg";
 
-export type Category = "tradicional" | "especial" | "bebida";
+export type Category = "tradicional" | "especial";
 
 export type SizeId = "P" | "M" | "G";
 
