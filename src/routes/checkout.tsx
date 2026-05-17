@@ -355,7 +355,7 @@ function CheckoutPage() {
             </div>
             {!hasPizza && (
               <p className="mt-4 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
-                Adicione pelo menos 1 pizza para finalizar. Bebidas só podem ser compradas junto com pizza.
+                Adicione pelo menos 1 pizza para finalizar.
               </p>
             )}
             <button
