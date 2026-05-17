@@ -34,7 +34,6 @@ export type MenuItem = {
 export const CATEGORIES: { id: Category; label: string }[] = [
   { id: "tradicional", label: "Tradicionais" },
   { id: "especial", label: "Especiais" },
-  { id: "bebida", label: "Bebidas" },
 ];
 
 export const SIZES: { id: SizeId; label: string; slices: string }[] = [
