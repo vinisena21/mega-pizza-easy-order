@@ -43,9 +43,6 @@ export function Footer() {
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
                 <span>Av. Ana Caburé, 1700 — Ponto dos Volantes/MG</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Instagram className="h-4 w-4" /> @megapizza
-              </li>
             </ul>
           </div>
         </div>
