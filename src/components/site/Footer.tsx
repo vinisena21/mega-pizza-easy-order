@@ -1,4 +1,4 @@
-import { Instagram, Phone, MapPin } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 import logoMegaPizza from "@/assets/logo-mega-pizza.png";
 
 export function Footer() {
@@ -42,9 +42,6 @@ export function Footer() {
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
                 <span>Av. Ana Caburé, 1700 — Ponto dos Volantes/MG</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Instagram className="h-4 w-4" /> @megapizza
               </li>
             </ul>
           </div>
