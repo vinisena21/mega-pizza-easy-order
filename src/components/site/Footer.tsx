@@ -1,4 +1,4 @@
-import { Instagram, Phone, MapPin } from "lucide-react";
+import { Phone, MapPin } from "lucide-react";
 import logoMegaPizza from "@/assets/logo-mega-pizza.png";
 
 export function Footer() {
