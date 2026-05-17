@@ -91,6 +91,8 @@ function CheckoutPage() {
       `*💰 Total: ${formatPrice(total)}*`,
       ``,
       `*Pagamento:* ${PAYMENT_LABELS[payment]}${payment === "dinheiro" && change ? ` (troco para ${change})` : ""}`,
+      ``,
+      `⚠️ _Confira se o valor do Pix recebido corresponde ao total acima (${formatPrice(total)}) antes de confirmar o pedido._`,
     ].join("\n");
 
     const url = buildWhatsAppOrderLink(msg);
