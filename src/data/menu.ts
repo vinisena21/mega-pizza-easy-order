@@ -209,33 +209,6 @@ export const MENU: MenuItem[] = [
     category: "especial",
     customizable: true,
   },
-  {
-    id: "coca-cola",
-    name: "Coca-Cola 600ml",
-    description: "Refrigerante gelado.",
-    basePrice: 9.9,
-    image: cola,
-    category: "bebida",
-    customizable: false,
-  },
-  {
-    id: "guarana",
-    name: "Guaraná Antarctica 600ml",
-    description: "Refrigerante gelado.",
-    basePrice: 9.9,
-    image: guarana,
-    category: "bebida",
-    customizable: false,
-  },
-  {
-    id: "agua",
-    name: "Água Mineral 500ml",
-    description: "Sem gás, gelada.",
-    basePrice: 5.5,
-    image: water,
-    category: "bebida",
-    customizable: false,
-  },
 ];
 
 export const DELIVERY_FEE = 0;
