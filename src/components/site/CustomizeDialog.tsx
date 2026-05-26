@@ -80,85 +80,79 @@ export function CustomizeDialog({
         </div>
 
         <div className="max-h-[calc(92vh-11rem-5.5rem)] overflow-y-auto px-5 py-5">
-          {item.customizable ? (
-            <>
-              <Section title="Tamanho">
-                <div className="grid grid-cols-3 gap-2">
-                  {SIZES.map((s) => {
-                    const sp = item.prices?.[s.id] ?? item.basePrice;
-                    return (
-                      <Choice
-                        key={s.id}
-                        active={size === s.id}
-                        onClick={() => setSize(s.id)}
-                        title={`${s.id} · ${s.label}`}
-                        subtitle={`${s.slices} · ${formatPrice(sp)}`}
+          <Section title="Tamanho">
+            <div className="grid grid-cols-3 gap-2">
+              {SIZES.map((s) => {
+                const sp = item.prices?.[s.id] ?? item.basePrice;
+                return (
+                  <Choice
+                    key={s.id}
+                    active={size === s.id}
+                    onClick={() => setSize(s.id)}
+                    title={`${s.id} · ${s.label}`}
+                    subtitle={`${s.slices} · ${formatPrice(sp)}`}
+                  />
+                );
+              })}
+            </div>
+          </Section>
+
+          <Section title="Borda recheada">
+            <div className="grid grid-cols-3 gap-2">
+              {CRUSTS.map((c) => {
+                const cp = c.prices[size];
+                return (
+                  <Choice
+                    key={c.id}
+                    active={crust === c.id}
+                    onClick={() => setCrust(c.id)}
+                    title={c.label}
+                    subtitle={cp === 0 ? "Grátis" : `+ ${formatPrice(cp)}`}
+                  />
+                );
+              })}
+            </div>
+          </Section>
+
+          <Section title="Adicionais (ingredientes)">
+            <div className="space-y-2">
+              {EXTRAS.map((e) => {
+                const checked = extras.includes(e.id);
+                return (
+                  <label
+                    key={e.id}
+                    className={cn(
+                      "flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 transition-colors",
+                      checked
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/40",
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleExtra(e.id)}
+                        className="h-4 w-4 accent-primary"
                       />
-                    );
-                  })}
-                </div>
-              </Section>
+                      <span className="text-sm font-medium">{e.label}</span>
+                    </div>
+                    <span className="text-sm text-gold">+ {formatPrice(e.price)}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </Section>
 
-              <Section title="Borda recheada">
-                <div className="grid grid-cols-3 gap-2">
-                  {CRUSTS.map((c) => {
-                    const cp = c.prices[size];
-                    return (
-                      <Choice
-                        key={c.id}
-                        active={crust === c.id}
-                        onClick={() => setCrust(c.id)}
-                        title={c.label}
-                        subtitle={cp === 0 ? "Grátis" : `+ ${formatPrice(cp)}`}
-                      />
-                    );
-                  })}
-                </div>
-              </Section>
-
-              <Section title="Adicionais (ingredientes)">
-                <div className="space-y-2">
-                  {EXTRAS.map((e) => {
-                    const checked = extras.includes(e.id);
-                    return (
-                      <label
-                        key={e.id}
-                        className={cn(
-                          "flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 transition-colors",
-                          checked
-                            ? "border-primary bg-primary/10"
-                            : "border-border hover:border-primary/40",
-                        )}
-                      >
-                        <div className="flex items-center gap-3">
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            onChange={() => toggleExtra(e.id)}
-                            className="h-4 w-4 accent-primary"
-                          />
-                          <span className="text-sm font-medium">{e.label}</span>
-                        </div>
-                        <span className="text-sm text-gold">+ {formatPrice(e.price)}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              </Section>
-
-              <Section title="Observações">
-                <textarea
-                  value={observations}
-                  onChange={(e) => setObservations(e.target.value)}
-                  placeholder="Sem cebola, bem assada..."
-                  rows={2}
-                  className="w-full rounded-xl border border-border bg-input px-4 py-3 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-                />
-              </Section>
-            </>
-          ) : (
-            <p className="text-sm text-muted-foreground">Bebida gelada, pronta para entrega.</p>
-          )}
+          <Section title="Observações">
+            <textarea
+              value={observations}
+              onChange={(e) => setObservations(e.target.value)}
+              placeholder="Sem cebola, bem assada..."
+              rows={2}
+              className="w-full rounded-xl border border-border bg-input px-4 py-3 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+            />
+          </Section>
         </div>
 
         <div className="flex items-center gap-3 border-t border-border bg-card/95 px-5 py-4">
