@@ -49,7 +49,7 @@ function MenuPage() {
           Escolha a sua favorita
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-          Personalize tamanho, borda e adicionais. Bebidas só podem ser compradas junto com uma pizza.
+          Personalize tamanho, borda e adicionais como preferir.
         </p>
       </div>
 
