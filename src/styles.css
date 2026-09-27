@@ -1,5 +1,4 @@
-@import "tailwindcss" source(none);
-@source "../src";
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -7,7 +6,6 @@
 /*
  * Mega Pizza — Premium dark design system.
  * Black canvas, blood-red primary, warm gold accent.
- * Elegant typography (Playfair for display, Inter for body).
  */
 
 @theme inline {
@@ -52,7 +50,6 @@
 :root {
   --radius: 0.75rem;
 
-  /* Dark canvas */
   --background: oklch(0.14 0.012 30);
   --foreground: oklch(0.97 0.01 80);
 
@@ -62,11 +59,9 @@
   --popover: oklch(0.18 0.014 30);
   --popover-foreground: oklch(0.97 0.01 80);
 
-  /* Blood red primary */
   --primary: oklch(0.55 0.21 25);
   --primary-foreground: oklch(0.99 0 0);
 
-  /* Warm gold accent */
   --gold: oklch(0.78 0.14 80);
   --gold-foreground: oklch(0.15 0.01 30);
 
@@ -89,16 +84,14 @@
   --input: oklch(0.24 0.012 30);
   --ring: oklch(0.55 0.21 25);
 
-  /* Gradients */
   --gradient-primary: linear-gradient(135deg, oklch(0.55 0.21 25), oklch(0.45 0.19 20));
   --gradient-gold: linear-gradient(135deg, oklch(0.82 0.14 85), oklch(0.7 0.15 70));
   --gradient-dark: linear-gradient(180deg, oklch(0.14 0.012 30), oklch(0.1 0.01 30));
-  --gradient-radial-glow:
-    radial-gradient(circle at 50% 0%, oklch(0.55 0.21 25 / 0.18), transparent 60%);
-}
-
-.dark {
-  /* same as root — site is always dark */
+  --gradient-radial-glow: radial-gradient(
+    circle at 50% 0%,
+    oklch(0.55 0.21 25 / 0.18),
+    transparent 60%
+  );
 }
 
 @layer base {
