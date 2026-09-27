@@ -31,24 +31,35 @@ export function CustomizeDialog({
   const addItem = useCart((s) => s.addItem);
 
   const unitPrice = useMemo(
-    () => calcUnitPrice({ basePrice: item.basePrice, size, crust, extras, customizable: item.customizable }),
-    [item, size, crust, extras],
+    () =>
+      calcUnitPrice({
+        basePrice: item.basePrice,
+        prices: item.prices,
+        size,
+        crust,
+        extras,
+        customizable: item.customizable,
+      }),
+    [item.basePrice, item.prices, item.customizable, size, crust, extras],
   );
 
   function toggleExtra(id: ExtraId) {
     setExtras((prev) => (prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]));
   }
 
-  function handleAdd() {
-    addItem(item, { size, crust, extras, quantity, observations });
-    toast.success(`${item.name} adicionada ao carrinho!`);
-    onOpenChange(false);
-    // reset
+  function reset() {
     setSize("M");
     setCrust("tradicional");
     setExtras([]);
     setQuantity(1);
     setObservations("");
+  }
+
+  function handleAdd() {
+    addItem(item, { size, crust, extras, quantity, observations: observations.trim() || undefined });
+    toast.success(`${item.name} adicionada ao carrinho!`);
+    onOpenChange(false);
+    reset();
   }
 
   if (!open) return null;
@@ -57,12 +68,17 @@ export function CustomizeDialog({
     <div
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm sm:items-center"
       onClick={() => onOpenChange(false)}
+      role="presentation"
     >
       <div
         className="relative max-h-[92vh] w-full max-w-lg overflow-hidden rounded-t-3xl border border-border bg-card shadow-elegant sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`Personalizar ${item.name}`}
       >
         <button
+          type="button"
           onClick={() => onOpenChange(false)}
           className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 backdrop-blur transition-colors hover:bg-background"
           aria-label="Fechar"
@@ -71,7 +87,7 @@ export function CustomizeDialog({
         </button>
 
         <div className="relative h-44 overflow-hidden">
-          <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+          <img src={item.image} alt="" className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
           <div className="absolute bottom-3 left-5 right-5">
             <h3 className="font-display text-2xl font-bold">{item.name}</h3>
@@ -158,6 +174,7 @@ export function CustomizeDialog({
         <div className="flex items-center gap-3 border-t border-border bg-card/95 px-5 py-4">
           <div className="flex items-center gap-2 rounded-full border border-border bg-background px-2 py-1">
             <button
+              type="button"
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
               className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-muted"
               aria-label="Diminuir"
@@ -166,6 +183,7 @@ export function CustomizeDialog({
             </button>
             <span className="w-6 text-center text-sm font-semibold">{quantity}</span>
             <button
+              type="button"
               onClick={() => setQuantity(quantity + 1)}
               className="flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-muted"
               aria-label="Aumentar"
@@ -175,6 +193,7 @@ export function CustomizeDialog({
           </div>
 
           <button
+            type="button"
             onClick={handleAdd}
             className="flex flex-1 items-center justify-between gap-2 rounded-full bg-gradient-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-[1.02]"
           >
