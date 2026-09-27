@@ -3,12 +3,22 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Clock, Copy, MessageCircle } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
-import { formatPrice } from "@/data/menu";
-import { buildWhatsAppOrderLink, RESTAURANT_NAME, PIX_KEY, PIX_KEY_DISPLAY, PIX_CITY } from "@/config";
+import { CRUSTS, EXTRAS, SIZES, formatPrice } from "@/data/menu";
+import {
+  buildWhatsAppOrderLink,
+  RESTAURANT_NAME,
+  PIX_KEY,
+  PIX_KEY_DISPLAY,
+  PIX_CITY,
+} from "@/config";
 import { buildPixPayload } from "@/lib/pix";
-import type { CartItem } from "@/store/cart";
 import { calcUnitPrice } from "@/store/cart";
-import { CRUSTS, EXTRAS, SIZES } from "@/data/menu";
+import {
+  buildWhatsAppOrderMessage,
+  loadLastOrder,
+  PAYMENT_LABELS,
+  type SavedOrder,
+} from "@/lib/order";
 
 export const Route = createFileRoute("/confirmacao")({
   head: () => ({
@@ -20,32 +30,11 @@ export const Route = createFileRoute("/confirmacao")({
   component: ConfirmationPage,
 });
 
-type Order = {
-  orderNumber: string;
-  name: string;
-  phone: string;
-  address: string;
-  items: CartItem[];
-  subtotal: number;
-  delivery: number;
-  total: number;
-  payment: "pix" | "cartao" | "dinheiro";
-  change?: string;
-  createdAt: number;
-};
-
-const PAYMENT_LABELS: Record<Order["payment"], string> = {
-  pix: "Pix",
-  cartao: "Cartão",
-  dinheiro: "Dinheiro",
-};
-
 function ConfirmationPage() {
-  const [order, setOrder] = useState<Order | null>(null);
+  const [order, setOrder] = useState<SavedOrder | null>(null);
 
   useEffect(() => {
-    const raw = sessionStorage.getItem("mega-pizza-last-order");
-    if (raw) setOrder(JSON.parse(raw));
+    setOrder(loadLastOrder());
   }, []);
 
   if (!order) {
@@ -63,7 +52,7 @@ function ConfirmationPage() {
     );
   }
 
-  const whatsappMessage = buildWhatsAppMessage(order);
+  const whatsappMessage = buildWhatsAppOrderMessage(order);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:py-16">
@@ -90,7 +79,9 @@ function ConfirmationPage() {
 
         <button
           type="button"
-          onClick={() => window.open(buildWhatsAppOrderLink(whatsappMessage), "_blank", "noopener,noreferrer")}
+          onClick={() =>
+            window.open(buildWhatsAppOrderLink(whatsappMessage), "_blank", "noopener,noreferrer")
+          }
           className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-sm font-semibold text-white shadow-elegant transition-transform hover:scale-[1.02]"
         >
           <MessageCircle className="h-5 w-5" />
@@ -98,9 +89,9 @@ function ConfirmationPage() {
         </button>
       </div>
 
-      {/* Pix QR Code */}
-      {order.payment === "pix" && <PixBlock amount={order.total} orderNumber={order.orderNumber} />}
-
+      {order.payment === "pix" && (
+        <PixBlock amount={order.total} orderNumber={order.orderNumber} />
+      )}
 
       <div className="mt-6 rounded-3xl border border-border/60 bg-card p-6 shadow-elegant sm:p-8">
         <h2 className="font-display text-xl font-semibold">Detalhes</h2>
@@ -158,41 +149,12 @@ function ConfirmationPage() {
       </div>
 
       <div className="mt-8 text-center">
-        <Link
-          to="/"
-          className="text-sm font-semibold text-muted-foreground hover:text-gold"
-        >
+        <Link to="/" className="text-sm font-semibold text-muted-foreground hover:text-gold">
           ← Voltar para a página inicial
         </Link>
       </div>
     </div>
   );
-}
-
-function buildWhatsAppMessage(order: Order) {
-  const lines = [
-    `*${RESTAURANT_NAME} — Pedido #${order.orderNumber}*`,
-    ``,
-    `*Cliente:* ${order.name}`,
-    `*Telefone:* ${order.phone}`,
-    `*Endereço:* ${order.address}`,
-    ``,
-    `*Itens:*`,
-    ...order.items.map((it) => {
-      const extra =
-        it.customizable
-          ? ` (${SIZES.find((s) => s.id === it.size)?.label}, borda ${CRUSTS.find((c) => c.id === it.crust)?.label}${it.extras.length ? `, +${it.extras.map((e) => EXTRAS.find((x) => x.id === e)?.label).join(", ")}` : ""})`
-          : "";
-      return `• ${it.quantity}× ${it.name}${extra} — ${formatPrice(calcUnitPrice(it) * it.quantity)}`;
-    }),
-    ``,
-    `Subtotal: ${formatPrice(order.subtotal)}`,
-    `Entrega: Grátis`,
-    `*Total: ${formatPrice(order.total)}*`,
-    ``,
-    `*Pagamento:* ${PAYMENT_LABELS[order.payment]}${order.payment === "dinheiro" && order.change ? ` (troco para ${order.change})` : ""}`,
-  ];
-  return lines.join("\n");
 }
 
 function InfoBox({
@@ -259,8 +221,8 @@ function PixBlock({ amount, orderNumber }: { amount: number; orderNumber: string
     <div className="mt-6 rounded-3xl border border-gold/40 bg-card p-6 shadow-elegant sm:p-8">
       <h2 className="font-display text-xl font-semibold">Pague com Pix</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Escaneie o QR Code ou copie o código abaixo no app do seu banco. Após pagar,
-        envie o comprovante pelo WhatsApp.
+        Escaneie o QR Code ou copie o código abaixo no app do seu banco. Após pagar, envie o
+        comprovante pelo WhatsApp.
       </p>
 
       <div className="mt-5 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
@@ -302,4 +264,3 @@ function PixBlock({ amount, orderNumber }: { amount: number; orderNumber: string
     </div>
   );
 }
-
