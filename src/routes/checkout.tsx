@@ -23,12 +23,6 @@ import {
 } from "@/lib/order";
 
 export const Route = createFileRoute("/checkout")({
-  head: () => ({
-    meta: [
-      { title: "Finalizar pedido — Mega Pizza" },
-      { name: "description", content: "Confirme seu pedido e escolha a forma de pagamento." },
-    ],
-  }),
   component: CheckoutPage,
 });
 
@@ -187,9 +181,7 @@ function CheckoutPage() {
                           >
                             <Minus className="h-3 w-3" />
                           </button>
-                          <span className="w-5 text-center text-sm font-semibold">
-                            {it.quantity}
-                          </span>
+                          <span className="w-5 text-center text-sm font-semibold">{it.quantity}</span>
                           <button
                             type="button"
                             onClick={() => setQty(it.uid, it.quantity + 1)}
@@ -311,8 +303,8 @@ function CheckoutPage() {
             )}
             {payment === "pix" && (
               <p className="mt-3 text-xs text-muted-foreground">
-                Você verá o QR Code e a chave Pix na próxima tela. Após pagar, envie o
-                comprovante pelo WhatsApp.
+                Você verá o QR Code e a chave Pix na próxima tela. Após pagar, envie o comprovante
+                pelo WhatsApp.
               </p>
             )}
           </Card>
@@ -329,9 +321,7 @@ function CheckoutPage() {
               <div className="my-3 border-t border-border" />
               <div className="flex items-center justify-between">
                 <span className="text-base font-semibold">Total</span>
-                <span className="font-display text-2xl font-bold text-gold">
-                  {formatPrice(total)}
-                </span>
+                <span className="font-display text-2xl font-bold text-gold">{formatPrice(total)}</span>
               </div>
             </div>
             {!hasPizza && (
