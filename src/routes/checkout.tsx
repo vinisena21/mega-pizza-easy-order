@@ -20,7 +20,9 @@ import {
   generateOrderNumber,
   saveLastOrder,
   type PaymentMethod,
+  type SavedOrder,
 } from "@/lib/order";
+import { persistOrder } from "@/lib/orders-api";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -34,6 +36,7 @@ function CheckoutPage() {
   const subtotal = useCart((s) => s.subtotal());
   const clear = useCart((s) => s.clear);
   const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -47,8 +50,9 @@ function CheckoutPage() {
   const hasPizza = useMemo(() => items.some((it) => it.customizable), [items]);
   const total = subtotal;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (submitting) return;
     if (items.length === 0) {
       toast.error("Seu carrinho está vazio.");
       return;
@@ -71,7 +75,7 @@ function CheckoutPage() {
     const orderNumber = generateOrderNumber();
     const fullAddress = `${address}, ${number}${complement ? ` — ${complement}` : ""} — ${neighborhood}`;
 
-    const order = {
+    const order: SavedOrder = {
       orderNumber,
       name: name.trim(),
       phone: phone.trim(),
@@ -85,14 +89,25 @@ function CheckoutPage() {
       createdAt: Date.now(),
     };
 
-    const msg = buildWhatsAppOrderMessage(order);
-    const url = buildWhatsAppOrderLink(msg);
+    setSubmitting(true);
+    try {
+      const saved = await persistOrder(order);
+      if (!saved.ok) {
+        console.warn("[orders] DB:", saved.error);
+        // Continua mesmo sem DB — WhatsApp ainda funciona
+      }
 
-    saveLastOrder(order);
-    clear();
+      const msg = buildWhatsAppOrderMessage(order);
+      const url = buildWhatsAppOrderLink(msg);
 
-    window.open(url, "_blank", "noopener,noreferrer");
-    navigate({ to: "/confirmacao" });
+      saveLastOrder(order);
+      clear();
+
+      window.open(url, "_blank", "noopener,noreferrer");
+      navigate({ to: "/confirmacao" });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (!hydrated) {
@@ -331,10 +346,10 @@ function CheckoutPage() {
             )}
             <button
               type="submit"
-              disabled={!hasPizza}
+              disabled={!hasPizza || submitting}
               className="mt-5 w-full rounded-full bg-gradient-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
             >
-              Confirmar pedido
+              {submitting ? "A gravar…" : "Confirmar pedido"}
             </button>
             <p className="mt-3 text-center text-[11px] text-muted-foreground">
               Tempo estimado de entrega: 35–45 min
