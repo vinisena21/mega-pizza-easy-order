@@ -5,21 +5,6 @@ import { MENU } from "@/data/menu";
 import { PizzaCard } from "@/components/site/PizzaCard";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Mega Pizza — Pizzas artesanais com delivery e frete grátis" },
-      {
-        name: "description",
-        content:
-          "Massa de fermentação natural, ingredientes selecionados e entrega quente. Peça agora pelo nosso cardápio digital.",
-      },
-      { property: "og:title", content: "Mega Pizza — Frete Grátis em todas as pizzas" },
-      {
-        property: "og:description",
-        content: "Pizzas artesanais entregues quentinhas. Peça já.",
-      },
-    ],
-  }),
   component: HomePage,
 });
 
@@ -28,7 +13,6 @@ function HomePage() {
 
   return (
     <>
-      {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-radial-glow" aria-hidden />
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:gap-6 md:py-24">
@@ -42,12 +26,10 @@ function HomePage() {
               <span className="text-gold">entregue quentinha.</span>
             </h1>
             <p className="mt-5 max-w-md text-base text-muted-foreground sm:text-lg">
-              Massa de fermentação natural por 48 horas, ingredientes selecionados e entrega
-              em até 45 minutos.
+              Massa de fermentação natural por 48 horas, ingredientes selecionados e entrega em até
+              45 minutos.
             </p>
-            <p className="mt-3 text-sm font-semibold text-gold">
-              ⏰ Quinta a Segunda · 18h às 23h
-            </p>
+            <p className="mt-3 text-sm font-semibold text-gold">⏰ Quinta a Segunda · 18h às 23h</p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
@@ -73,10 +55,7 @@ function HomePage() {
           </div>
 
           <div className="relative">
-            <div
-              className="absolute -inset-10 rounded-full bg-primary/30 blur-3xl"
-              aria-hidden
-            />
+            <div className="absolute -inset-10 rounded-full bg-primary/30 blur-3xl" aria-hidden />
             <img
               src={heroPizza}
               alt="Pizza artesanal Mega Pizza"
@@ -84,14 +63,13 @@ function HomePage() {
               height={1024}
               className="relative w-full rounded-3xl object-cover shadow-elegant"
             />
-            <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 rounded-full border border-gold/40 bg-card/95 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gold backdrop-blur shadow-gold whitespace-nowrap">
+            <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-gold/40 bg-card/95 px-5 py-2 text-xs font-semibold uppercase tracking-wider text-gold shadow-gold backdrop-blur">
               🚚 Frete Grátis em todas as pizzas
             </div>
           </div>
         </div>
       </section>
 
-      {/* BEST SELLERS */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -118,7 +96,6 @@ function HomePage() {
         </div>
       </section>
 
-      {/* INFO BANNER */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="relative overflow-hidden rounded-3xl border border-gold/30 bg-gradient-dark p-10 shadow-elegant sm:p-14">
           <div
@@ -168,9 +145,7 @@ function Stat({
         {icon}
       </div>
       <div className="font-display text-base font-bold">{value}</div>
-      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-        {label}
-      </div>
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
     </div>
   );
 }
