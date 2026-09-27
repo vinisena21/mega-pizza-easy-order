@@ -1,14 +1,16 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom/client';
-import { RouterProvider } from '@tanstack/react-router';
-import { getRouter } from './router';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { RouterProvider } from "@tanstack/react-router";
+import { getRouter } from "./router";
+import "./styles.css";
 
-import './styles.css';
+const rootEl = document.getElementById("root");
+if (!rootEl) {
+  throw new Error('Elemento #root não encontrado. Verifique o index.html.');
+}
 
-const router = getRouter();
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+createRoot(rootEl).render(
+  <StrictMode>
+    <RouterProvider router={getRouter()} />
+  </StrictMode>,
 );
