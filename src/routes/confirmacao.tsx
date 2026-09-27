@@ -21,12 +21,6 @@ import {
 } from "@/lib/order";
 
 export const Route = createFileRoute("/confirmacao")({
-  head: () => ({
-    meta: [
-      { title: "Pedido confirmado — Mega Pizza" },
-      { name: "description", content: "Seu pedido foi recebido. Estamos preparando!" },
-    ],
-  }),
   component: ConfirmationPage,
 });
 
@@ -64,17 +58,13 @@ function ConfirmationPage() {
           Pedido confirmado!
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Obrigado, <strong className="text-foreground">{order.name.split(" ")[0]}</strong>!
-          Já estamos preparando.
+          Obrigado, <strong className="text-foreground">{order.name.split(" ")[0]}</strong>! Já
+          estamos preparando.
         </p>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <InfoBox label="Número do pedido" value={`#${order.orderNumber}`} highlight />
-          <InfoBox
-            label="Tempo estimado"
-            value="35–45 min"
-            icon={<Clock className="h-4 w-4" />}
-          />
+          <InfoBox label="Tempo estimado" value="35–45 min" icon={<Clock className="h-4 w-4" />} />
         </div>
 
         <button
@@ -89,9 +79,7 @@ function ConfirmationPage() {
         </button>
       </div>
 
-      {order.payment === "pix" && (
-        <PixBlock amount={order.total} orderNumber={order.orderNumber} />
-      )}
+      {order.payment === "pix" && <PixBlock amount={order.total} orderNumber={order.orderNumber} />}
 
       <div className="mt-6 rounded-3xl border border-border/60 bg-card p-6 shadow-elegant sm:p-8">
         <h2 className="font-display text-xl font-semibold">Detalhes</h2>
