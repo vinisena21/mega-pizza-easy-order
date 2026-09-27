@@ -1,11 +1,26 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Minus, Plus, Trash2, ShoppingBag, MapPin, CreditCard, Banknote, QrCode } from "lucide-react";
+import {
+  Minus,
+  Plus,
+  Trash2,
+  ShoppingBag,
+  MapPin,
+  CreditCard,
+  Banknote,
+  QrCode,
+} from "lucide-react";
 import { toast } from "sonner";
 import { CRUSTS, EXTRAS, SIZES, formatPrice } from "@/data/menu";
-import { calcUnitPrice, useCart, useCartHydrated, type CartItem } from "@/store/cart";
+import { calcUnitPrice, useCart, useCartHydrated } from "@/store/cart";
 import { cn } from "@/lib/utils";
-import { buildWhatsAppOrderLink, RESTAURANT_NAME } from "@/config";
+import { buildWhatsAppOrderLink } from "@/config";
+import {
+  buildWhatsAppOrderMessage,
+  generateOrderNumber,
+  saveLastOrder,
+  type PaymentMethod,
+} from "@/lib/order";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -16,8 +31,6 @@ export const Route = createFileRoute("/checkout")({
   }),
   component: CheckoutPage,
 });
-
-type PaymentMethod = "pix" | "cartao" | "dinheiro";
 
 function CheckoutPage() {
   const hydrated = useCartHydrated();
@@ -37,11 +50,8 @@ function CheckoutPage() {
   const [payment, setPayment] = useState<PaymentMethod>("pix");
   const [change, setChange] = useState("");
 
-  const hasPizza = useMemo(
-    () => items.some((it) => it.customizable),
-    [items],
-  );
-  const total = useMemo(() => subtotal, [subtotal]);
+  const hasPizza = useMemo(() => items.some((it) => it.customizable), [items]);
+  const total = subtotal;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -53,70 +63,40 @@ function CheckoutPage() {
       toast.error("Adicione pelo menos 1 pizza ao carrinho para finalizar.");
       return;
     }
-    if (!name.trim() || !phone.trim() || !address.trim() || !number.trim() || !neighborhood.trim()) {
+    if (
+      !name.trim() ||
+      !phone.trim() ||
+      !address.trim() ||
+      !number.trim() ||
+      !neighborhood.trim()
+    ) {
       toast.error("Preencha todos os campos obrigatórios.");
       return;
     }
-    const orderNumber = Math.floor(100000 + Math.random() * 900000).toString();
+
+    const orderNumber = generateOrderNumber();
     const fullAddress = `${address}, ${number}${complement ? ` — ${complement}` : ""} — ${neighborhood}`;
-    const PAYMENT_LABELS: Record<PaymentMethod, string> = {
-      pix: "Pix",
-      cartao: "Cartão",
-      dinheiro: "Dinheiro",
+
+    const order = {
+      orderNumber,
+      name: name.trim(),
+      phone: phone.trim(),
+      address: fullAddress,
+      items,
+      subtotal,
+      delivery: 0,
+      total,
+      payment,
+      change: payment === "dinheiro" ? change.trim() || undefined : undefined,
+      createdAt: Date.now(),
     };
 
-    // Build WhatsApp message
-    const itemLines = items.map((it) => {
-      const sizeLabel = it.customizable ? SIZES.find((s) => s.id === it.size)?.label : "";
-      const crustLabel = it.customizable ? CRUSTS.find((c) => c.id === it.crust)?.label : "";
-      const extrasLabel = it.extras.length
-        ? `, +${it.extras.map((ex) => EXTRAS.find((x) => x.id === ex)?.label).join(", ")}`
-        : "";
-      const detail = it.customizable ? ` (${sizeLabel}, borda ${crustLabel}${extrasLabel})` : "";
-      return `• ${it.quantity}× ${it.name}${detail} — ${formatPrice(calcUnitPrice(it) * it.quantity)}`;
-    });
-
-    const msg = [
-      `*${RESTAURANT_NAME} — Pedido #${orderNumber}*`,
-      ``,
-      `*Cliente:* ${name}`,
-      `*Telefone:* ${phone}`,
-      `*Endereço:* ${fullAddress}`,
-      ``,
-      `*🍕 Itens:*`,
-      ...itemLines,
-      ``,
-      `Subtotal: ${formatPrice(subtotal)}`,
-      `Entrega: 🚚 Grátis`,
-      `*💰 Total: ${formatPrice(total)}*`,
-      ``,
-      `*Pagamento:* ${PAYMENT_LABELS[payment]}${payment === "dinheiro" && change ? ` (troco para ${change})` : ""}`,
-      ``,
-      `⚠️ _Confira se o valor do Pix recebido corresponde ao total acima (${formatPrice(total)}) antes de confirmar o pedido._`,
-    ].join("\n");
-
+    const msg = buildWhatsAppOrderMessage(order);
     const url = buildWhatsAppOrderLink(msg);
 
-    // Save order for confirmation page
-    sessionStorage.setItem(
-      "mega-pizza-last-order",
-      JSON.stringify({
-        orderNumber,
-        name,
-        phone,
-        address: fullAddress,
-        items,
-        subtotal,
-        delivery: 0,
-        total,
-        payment,
-        change,
-        createdAt: Date.now(),
-      }),
-    );
+    saveLastOrder(order);
     clear();
 
-    // Open WhatsApp in new tab (avoids iframe/embed blocking)
     window.open(url, "_blank", "noopener,noreferrer");
     navigate({ to: "/confirmacao" });
   }
@@ -124,7 +104,7 @@ function CheckoutPage() {
   if (!hydrated) {
     return (
       <div className="mx-auto flex max-w-md flex-col items-center px-4 py-24 text-center">
-        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-card border border-border">
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-border bg-card">
           <ShoppingBag className="h-9 w-9 text-muted-foreground" />
         </div>
         <p className="text-muted-foreground">Carregando carrinho…</p>
@@ -135,7 +115,7 @@ function CheckoutPage() {
   if (items.length === 0) {
     return (
       <div className="mx-auto flex max-w-md flex-col items-center px-4 py-24 text-center">
-        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-card border border-border">
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-border bg-card">
           <ShoppingBag className="h-9 w-9 text-muted-foreground" />
         </div>
         <h1 className="font-display text-3xl font-bold">Seu carrinho está vazio</h1>
@@ -158,9 +138,7 @@ function CheckoutPage() {
       </p>
 
       <form onSubmit={handleSubmit} className="mt-10 grid gap-8 lg:grid-cols-[1fr_400px]">
-        {/* LEFT: items + form */}
         <div className="space-y-6">
-          {/* Itens */}
           <Card title="Seu pedido">
             <ul className="divide-y divide-border">
               {items.map((it) => {
@@ -186,8 +164,8 @@ function CheckoutPage() {
                       </div>
                       {it.customizable && (
                         <p className="text-xs text-muted-foreground">
-                          {SIZES.find((s) => s.id === it.size)?.label} ·{" "}
-                          Borda {CRUSTS.find((c) => c.id === it.crust)?.label}
+                          {SIZES.find((s) => s.id === it.size)?.label} · Borda{" "}
+                          {CRUSTS.find((c) => c.id === it.crust)?.label}
                           {it.extras.length > 0 &&
                             ` · ${it.extras
                               .map((e) => EXTRAS.find((x) => x.id === e)?.label)
@@ -232,7 +210,6 @@ function CheckoutPage() {
             </ul>
           </Card>
 
-          {/* Endereço */}
           <Card title="Entrega" icon={<MapPin className="h-4 w-4 text-gold" />}>
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label="Nome completo *" full>
@@ -242,6 +219,7 @@ function CheckoutPage() {
                   className="input"
                   placeholder="João da Silva"
                   required
+                  autoComplete="name"
                 />
               </Field>
               <Field label="Telefone (WhatsApp) *">
@@ -249,8 +227,10 @@ function CheckoutPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="input"
-                  placeholder="(11) 99999-9999"
+                  placeholder="(33) 99999-9999"
                   required
+                  inputMode="tel"
+                  autoComplete="tel"
                 />
               </Field>
               <Field label="Bairro *">
@@ -269,6 +249,7 @@ function CheckoutPage() {
                   className="input"
                   placeholder="Rua das Pizzas"
                   required
+                  autoComplete="street-address"
                 />
               </Field>
               <Field label="Número *">
@@ -291,7 +272,6 @@ function CheckoutPage() {
             </div>
           </Card>
 
-          {/* Pagamento */}
           <Card title="Pagamento">
             <div className="grid gap-3 sm:grid-cols-3">
               <PaymentChoice
@@ -338,7 +318,6 @@ function CheckoutPage() {
           </Card>
         </div>
 
-        {/* RIGHT: summary */}
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <Card title="Resumo">
             <div className="space-y-2 text-sm">
